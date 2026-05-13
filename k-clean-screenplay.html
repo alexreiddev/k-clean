@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-CLEAN · A Screenplay in Three Episodes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Cynical Teal palette */
+    --bg: #04101a;
+    --bg-1: #061620;
+    --bg-2: #0a1c26;
+    --bg-3: #102832;
+    --bg-card: #0d2129;
+    --rule: #1a3540;
+    --rule-soft: #122a35;
+
+    --ink: #e8f0f0;
+    --ink-1: #c5d2d2;
+    --ink-2: #8aa0a4;
+    --ink-3: #5a7278;
+    --ink-4: #3a5258;
+
+    /* The K-Clean brand neon */
+    --neon: #2eff7a;
+    --neon-dim: #1ec560;
+    --neon-glow: rgba(46, 255, 122, 0.4);
+
+    /* Editorial accents */
+    --gold: #f4c84a;
+    --blood: #d93847;
+    --teal-bright: #4ac0d8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink-1);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Subtle scanline / grade overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 99;
+    background:
+      repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 3px),
+      radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.55) 100%);
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 98;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+  }
+
+  /* ============== CHROME / TOP BAR ============== */
+  .chrome {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(4, 16, 26, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .chrome-left {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .chrome-logo {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--neon);
+    box-shadow: 0 0 10px var(--neon-glow);
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .chrome-logo::before,
+  .chrome-logo::after {
+    content: '';
+    position: absolute;
+    background: var(--bg);
+    border-radius: 50%;
+    width: 3px;
+    height: 3px;
+    top: 7px;
+  }
+  .chrome-logo::before { left: 6px; }
+  .chrome-logo::after { right: 6px; }
+
+  .chrome-smile {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 4px;
+    border: 1.5px solid var(--bg);
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+  }
+
+  .chrome-title {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+
+  .chrome-title small {
+    display: block;
+    font-weight: 400;
+    font-size: 0.55rem;
+    letter-spacing: 0.4em;
+    color: var(--neon);
+    margin-top: 0.15rem;
+  }
+
+  .chrome-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .sound-btn {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .sound-btn:hover {
+    border-color: var(--neon);
+    color: var(--neon);
+  }
+
+  .sound-btn.on {
+    border-color: var(--neon);
+    color: var(--neon);
+  }
+
+  .sound-btn .pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-3);
+  }
+
+  .sound-btn.on .pulse {
+    background: var(--neon);
+    box-shadow: 0 0 8px var(--neon);
+    animation: pulse-soft 1.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  /* ============== TITLE PAGE ============== */
+  .title-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 5rem 1.5rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .title-page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 50%, rgba(46, 255, 122, 0.06), transparent 70%),
+      radial-gradient(ellipse 80% 50% at 50% 100%, rgba(74, 192, 216, 0.08), transparent 60%);
+    pointer-events: none;
+  }
+
+  .draft-stamp {
+    position: absolute;
+    top: 5rem;
+    right: 1.5rem;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--blood);
+    text-transform: uppercase;
+    border: 1px solid var(--blood);
+    padding: 0.4rem 0.7rem;
+    transform: rotate(-3deg);
+    opacity: 0.7;
+    z-index: 2;
+  }
+
+  .title-bag {
+    width: 90px;
+    height: 110px;
+    margin-bottom: 3rem;
+    position: relative;
+    background:
+      linear-gradient(180deg, var(--neon-dim) 0%, var(--neon) 25%, var(--neon-dim) 100%);
+    border-radius: 8px 8px 4px 4px;
+    box-shadow:
+      0 0 40px var(--neon-glow),
+      inset -4px -4px 14px rgba(0,0,0,0.3),
+      inset 4px 4px 14px rgba(255,255,255,0.15);
+    animation: bag-breathe 5s ease-in-out infinite;
+    z-index: 2;
+  }
+
+  .title-bag::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 12px;
+    background: var(--bg-2);
+    border-radius: 6px 6px 0 0;
+  }
+
+  .title-bag::after {
+    content: '';
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: inset 0 0 0 2px var(--bg);
+  }
+
+  .earth-face {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--teal-bright), #1a4a6a 70%);
+    z-index: 3;
+  }
+
+  .earth-face::before,
+  .earth-face::after {
+    content: '';
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    width: 4px;
+    height: 4px;
+    top: 16px;
+  }
+
+  .earth-face::before { left: 12px; }
+  .earth-face::after { right: 12px; }
+
+  .earth-smile {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 8px;
+    border: 2px solid #fff;
+    border-top: 0;
+    border-radius: 0 0 16px 16px;
+  }
+
+  .title-presents {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    z-index: 2;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.4s forwards;
+  }
+
+  .title-main {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3.5rem, 14vw, 7.5rem);
+    line-height: 0.9;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+    z-index: 2;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.7s forwards;
+  }
+
+  .title-main em {
+    font-style: italic;
+    color: var(--neon);
+    text-shadow: 0 0 30px var(--neon-glow);
+  }
+
+  .title-sub {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.8vw, 1.6rem);
+    color: var(--ink-2);
+    margin-bottom: 3rem;
+    z-index: 2;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 1s forwards;
+  }
+
+  .title-meta {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.85rem;
+    color: var(--ink-2);
+    letter-spacing: 0.05em;
+    line-height: 2;
+    z-index: 2;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 1.3s forwards;
+  }
+
+  .title-meta .label {
+    color: var(--ink-3);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-right: 0.6em;
+  }
+
+  .title-footer {
+    margin-top: 4rem;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    color: var(--ink-3);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    z-index: 2;
+    opacity: 0;
+    animation: fadeIn 1.2s ease 1.8s forwards;
+  }
+
+  /* ============== AESTHETIC NOTE ============== */
+  .aesthetic {
+    padding: 4rem 1.5rem;
+    background: var(--bg-1);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .aesthetic-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .aesthetic-tag {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--neon);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    text-align: center;
+  }
+
+  .aesthetic-quote {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+    color: var(--ink);
+    line-height: 1.5;
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .aesthetic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .aesthetic-card {
+    background: var(--bg-2);
+    border-left: 2px solid var(--neon);
+    padding: 1.2rem 1.4rem;
+  }
+
+  .aesthetic-card .k {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--neon);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .aesthetic-card .v {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ink-1);
+    line-height: 1.5;
+  }
+
+  /* ============== EPISODE BLOCKS ============== */
+  .episode {
+    padding: 5rem 1.5rem 4rem;
+    border-top: 1px solid var(--rule);
+    position: relative;
+  }
+
+  .episode:nth-child(odd) { background: var(--bg); }
+  .episode:nth-child(even) { background: var(--bg-1); }
+
+  .ep-card {
+    max-width: 700px;
+    margin: 0 auto 3rem;
+    position: relative;
+  }
+
+  .ep-num-watermark {
+    position: absolute;
+    top: -2rem;
+    right: -1rem;
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: clamp(8rem, 25vw, 14rem);
+    line-height: 0.85;
+    color: var(--rule);
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .ep-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--neon);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ep-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 6vw, 3.5rem);
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 1.2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ep-title em { font-style: italic; color: var(--neon); }
+
+  .ep-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.8rem 1.5rem;
+    padding: 1rem 0 1.2rem;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    z-index: 1;
+  }
+
+  .ep-meta-item .k {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+
+  .ep-meta-item .v {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.85rem;
+    color: var(--ink-1);
+  }
+
+  /* ============== SCREENPLAY ============== */
+  .screenplay {
+    max-width: 65ch;
+    margin: 0 auto;
+    font-family: 'Courier Prime', monospace;
+    font-size: 14.5px;
+    line-height: 1.45;
+    color: var(--ink-1);
+    background: var(--bg-card);
+    padding: 3rem 2.5rem;
+    border: 1px solid var(--rule);
+    position: relative;
+  }
+
+  /* Page number ornament */
+  .screenplay::before {
+    content: attr(data-page);
+    position: absolute;
+    top: 1rem;
+    right: 1.2rem;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-4);
+    letter-spacing: 0.1em;
+  }
+
+  .fade {
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 1.2em 0;
+    letter-spacing: 0.05em;
+  }
+
+  .slug {
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 1.6em 0 0.5em;
+    letter-spacing: 0.02em;
+    border-bottom: 1px dashed var(--rule);
+    padding-bottom: 0.3em;
+  }
+
+  .action {
+    margin: 0.8em 0;
+    color: var(--ink-1);
+  }
+
+  .action em {
+    font-style: italic;
+    color: var(--ink-2);
+  }
+
+  .action strong {
+    color: var(--neon);
+    font-weight: 700;
+  }
+
+  .action .gold { color: var(--gold); font-weight: 700; }
+  .action .blood { color: var(--blood); font-weight: 700; }
+
+  .insert {
+    margin: 1em 0;
+    padding: 0.6em 0.9em;
+    background: var(--bg-2);
+    border-left: 2px solid var(--teal-bright);
+    font-style: italic;
+    color: var(--ink-1);
+  }
+
+  .insert .label {
+    display: block;
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--teal-bright);
+    font-size: 0.7em;
+    letter-spacing: 0.2em;
+    margin-bottom: 0.3em;
+  }
+
+  .character {
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 700;
+    margin: 1.2em 0 0.1em;
+    letter-spacing: 0.05em;
+    padding-left: 22%;
+  }
+
+  .parenthetical {
+    text-align: center;
+    font-style: italic;
+    color: var(--ink-2);
+    margin: 0.1em 0;
+    padding-left: 22%;
+  }
+
+  .dialogue {
+    margin: 0.2em 0 0.5em;
+    padding: 0 12% 0 12%;
+    color: var(--ink);
+  }
+
+  .transition {
+    text-align: right;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 1.4em 0 0.6em;
+    letter-spacing: 0.05em;
+  }
+
+  .sfx {
+    margin: 0.8em 0;
+    color: var(--neon);
+    font-style: italic;
+    font-size: 0.92em;
+  }
+
+  .sfx::before {
+    content: '◢◤ ';
+    font-style: normal;
+  }
+
+  .ep-end {
+    text-align: center;
+    margin-top: 2.5em;
+    padding-top: 1.5em;
+    border-top: 1px solid var(--rule);
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+  }
+
+  /* Mobile screenplay adjustments */
+  @media (max-width: 600px) {
+    .screenplay {
+      padding: 2rem 1.2rem;
+      font-size: 13px;
+      max-width: 100%;
+    }
+    .character, .parenthetical { padding-left: 0; }
+    .dialogue { padding: 0; }
+  }
+
+  /* ============== LOOP DIAGRAM ============== */
+  .loop-section {
+    padding: 5rem 1.5rem;
+    background: var(--bg-1);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .loop-tag {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--neon);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .loop-title {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .loop-sub {
+    color: var(--ink-2);
+    font-size: 0.95rem;
+    max-width: 40ch;
+    margin: 0 auto 3rem;
+  }
+
+  .loop-diagram {
+    width: min(420px, 95%);
+    aspect-ratio: 1;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .loop-svg { width: 100%; height: 100%; }
+
+  .loop-node {
+    position: absolute;
+    width: 110px;
+    text-align: center;
+    transform: translate(-50%, -50%);
+  }
+
+  .loop-node .num {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 2.5rem;
+    color: var(--neon);
+    line-height: 1;
+    text-shadow: 0 0 16px var(--neon-glow);
+  }
+
+  .loop-node .name {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--ink-1);
+    text-transform: uppercase;
+    margin-top: 0.4rem;
+  }
+
+  .loop-node .line {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--ink-2);
+    margin-top: 0.3rem;
+  }
+
+  .loop-node.n1 { top: 18%; left: 50%; }
+  .loop-node.n2 { top: 75%; left: 22%; }
+  .loop-node.n3 { top: 75%; left: 78%; }
+
+  /* ============== PRODUCTION NOTES ============== */
+  .prod {
+    padding: 5rem 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .prod-head {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .prod-tag {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--neon);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  .prod-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    color: var(--ink);
+    line-height: 1.1;
+  }
+
+  .prod-title em { font-style: italic; color: var(--neon); }
+
+  .prod-note {
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--neon);
+    padding: 1.8rem 1.6rem;
+    margin-bottom: 1.2rem;
+    position: relative;
+  }
+
+  .prod-note .num {
+    position: absolute;
+    top: -0.5rem;
+    left: -0.5rem;
+    background: var(--neon);
+    color: var(--bg);
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.55rem;
+    border-radius: 2px;
+  }
+
+  .prod-note h3 {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--ink);
+    margin-bottom: 0.8rem;
+  }
+
+  .prod-note p {
+    color: var(--ink-1);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .prod-note .accent { color: var(--neon); font-weight: 600; }
+
+  /* The wardrobe comparison strip */
+  .wardrobe {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.2rem;
+  }
+
+  .ward-item {
+    background: var(--bg-3);
+    padding: 1rem;
+    border: 1px dashed var(--rule);
+  }
+
+  .ward-item .k {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .ward-item .v {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink-1);
+    font-size: 0.9rem;
+  }
+
+  .ward-item .v strong { color: var(--neon); }
+  .ward-item.then .v strong { color: var(--gold); }
+
+  /* Green stickers visualization */
+  .stickers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+    padding: 1rem;
+    background: var(--bg-3);
+  }
+
+  .sticker {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--neon);
+    box-shadow: 0 0 8px var(--neon-glow);
+    flex-shrink: 0;
+    animation: sticker-pulse 3s ease-in-out infinite;
+  }
+
+  .sticker:nth-child(2) { animation-delay: 0.4s; }
+  .sticker:nth-child(3) { animation-delay: 0.8s; }
+  .sticker:nth-child(4) { animation-delay: 1.2s; }
+  .sticker:nth-child(5) { animation-delay: 1.6s; }
+  .sticker:nth-child(6) { animation-delay: 2.0s; }
+  .sticker:nth-child(7) { animation-delay: 2.4s; }
+
+  @keyframes sticker-pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; box-shadow: 0 0 14px var(--neon); }
+  }
+
+  /* ============== QR EASTER EGG ============== */
+  .easter {
+    padding: 5rem 1.5rem;
+    background:
+      radial-gradient(ellipse at center, rgba(46, 255, 122, 0.05), transparent 60%),
+      var(--bg);
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .qr-wrap {
+    display: inline-block;
+    background: var(--ink);
+    padding: 1.2rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 0 40px rgba(46, 255, 122, 0.15);
+    position: relative;
+  }
+
+  .qr-wrap::before, .qr-wrap::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 3px solid var(--neon);
+  }
+
+  .qr-wrap::before {
+    top: -8px; left: -8px;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  .qr-wrap::after {
+    bottom: -8px; right: -8px;
+    border-left: 0;
+    border-top: 0;
+  }
+
+  .qr {
+    display: grid;
+    grid-template-columns: repeat(21, 8px);
+    grid-template-rows: repeat(21, 8px);
+    gap: 0;
+  }
+
+  .qr div {
+    width: 8px;
+    height: 8px;
+    background: var(--bg);
+  }
+
+  .qr div.off { background: var(--ink); }
+
+  .easter-caption {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+  }
+
+  .easter-warning {
+    margin-top: 2rem;
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--ink-3);
+    max-width: 40ch;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+
+  /* ============== FOOTER ============== */
+  .footer {
+    padding: 3rem 1.5rem;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .footer-mark {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .footer-text {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--ink-2);
+  }
+
+  /* ============== ANIMATIONS ============== */
+  @keyframes rise { to { transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  @keyframes bag-breathe {
+    0%, 100% {
+      box-shadow: 0 0 40px var(--neon-glow), inset -4px -4px 14px rgba(0,0,0,0.3), inset 4px 4px 14px rgba(255,255,255,0.15);
+    }
+    50% {
+      box-shadow: 0 0 70px var(--neon-glow), 0 0 110px rgba(46, 255, 122, 0.2), inset -4px -4px 14px rgba(0,0,0,0.3), inset 4px 4px 14px rgba(255,255,255,0.15);
+    }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== CHROME ============== -->
+<header class="chrome">
+  <div class="chrome-left">
+    <div class="chrome-logo">
+      <div class="chrome-smile"></div>
+    </div>
+    <div class="chrome-title">K-Clean<small>The Zero Waste Initiative</small></div>
+  </div>
+  <div class="chrome-right">
+    <button class="sound-btn" id="soundBtn" aria-label="Toggle soundscape">
+      <span class="pulse"></span>
+      Soundscape
+    </button>
+  </div>
+</header>
+
+<!-- ============== TITLE PAGE ============== -->
+<section class="title-page">
+  <div class="draft-stamp">First Draft · Confidential</div>
+
+  <div class="title-bag">
+    <div class="earth-face">
+      <div class="earth-smile"></div>
+    </div>
+  </div>
+
+  <div class="title-presents">A Final Cut Original Screenplay</div>
+
+  <h1 class="title-main">K-<em>Clean</em></h1>
+  <p class="title-sub">The Zero Waste Initiative</p>
+
+  <div class="title-meta">
+    <div><span class="label">Format</span>Limited Series · Three Episodes</div>
+    <div><span class="label">Genre</span>Political Thriller · Neo-Noir</div>
+    <div><span class="label">Setting</span>Thiruvananthapuram · Present Day</div>
+    <div><span class="label">Written by</span>The Final Cut Collective</div>
+  </div>
+
+  <div class="title-footer">— Property of Final Cut · Do not distribute —</div>
+</section>
+
+<!-- ============== AESTHETIC ============== -->
+<section class="aesthetic">
+  <div class="aesthetic-wrap">
+    <div class="aesthetic-tag">Series Bible</div>
+    <p class="aesthetic-quote">
+      Three people. Three rooms. One smiling bag of fertilizer.<br>
+      The corruption isn't hidden — it's certified.
+    </p>
+
+    <div class="aesthetic-grid">
+      <div class="aesthetic-card">
+        <div class="k">Color Grade</div>
+        <div class="v">Cynical Teal. High-end. Sharp shadows. Government office cleanliness with a green-tinted rot underneath.</div>
+      </div>
+      <div class="aesthetic-card">
+        <div class="k">Soundscape</div>
+        <div class="v">A deep, distorted synthesizer playing a slow Vanchippattu (boat song) rhythm. Each episode is one oar stroke.</div>
+      </div>
+      <div class="aesthetic-card">
+        <div class="k">The Anchor</div>
+        <div class="v">A neon-green K-Clean Organic Fertilizer bag with a smiling Earth logo. Present in every episode. Holds something different each time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== EPISODE 1 ============== -->
+<section class="episode reveal" id="ep1">
+  <div class="ep-card">
+    <div class="ep-num-watermark">I</div>
+    <div class="ep-label">Episode One</div>
+    <h2 class="ep-title">The <em>Harvest</em></h2>
+    <div class="ep-meta">
+      <div class="ep-meta-item"><div class="k">Character</div><div class="v">SUKU · 60s · retired teacher</div></div>
+      <div class="ep-meta-item"><div class="k">Location</div><div class="v">Backyard garden · Thiruvananthapuram</div></div>
+      <div class="ep-meta-item"><div class="k">Runtime</div><div class="v">~22 minutes</div></div>
+    </div>
+  </div>
+
+  <div class="screenplay" data-page="EP. 1 — pg. 01">
+
+    <div class="fade">FADE IN:</div>
+
+    <div class="slug">EXT. SUKU'S BACKYARD GARDEN — DAY</div>
+
+    <div class="action"><em>Lush. Banana leaves throw jagged shadows. Somewhere, a pressure cooker whistles three houses down.</em></div>
+
+    <div class="action">EXTREME CLOSE-UP. A trembling, elderly finger. A jagged, bleeding cut. The finger holds a dull, <span class="gold">yellow metallic PEBBLE</span>, rinsed under a tap. The water runs <span class="blood">pink</span>.</div>
+
+    <div class="slug">WIDE — SAME</div>
+
+    <div class="action">SUKU (60s, threadbare "Janakeeya" cotton shirt, the kind of man neighbours call "Sir") crouches at his garden tap. Beside him — propped against the wall — a half-empty <strong>K-CLEAN BAG</strong>. Neon green. The smiling Earth logo grinning right at us.</div>
+
+    <div class="action">His eyes lift to a framed CERTIFICATE OF APPRECIATION on the porch. The kind given for civic duty.</div>
+
+    <div class="action">He looks back at the pebble. Pulls a small whetstone from his pocket. Scratches.</div>
+
+    <div class="action">The pebble is <span class="gold">SOFT</span>. 24-karat.</div>
+
+    <div class="action">Suku stares. He turns slowly toward the bag. Reaches in. Past the dark compost. His hand finds something <em>heavy</em>.</div>
+
+    <div class="action">He pulls out a <strong>vacuum-sealed plastic packet</strong>. Dirty on the outside. Unmistakable by weight.</div>
+
+    <div class="insert">
+      <span class="label">Insert — CU</span>
+      The "BATCH NUMBER" printed on the K-Clean bag. It is not a number. It is a string of digits:<br><br>
+      <strong style="color: var(--neon);">8.4912° N, 76.9502° E</strong><br><br>
+      A GPS coordinate. A beach.
+    </div>
+
+    <div class="action">Suku's face moves through three things in two seconds: confusion. recognition. <em>fear</em>.</div>
+
+    <div class="sfx">The GATE LATCH clicks open.</div>
+
+    <div class="slug">EXT. GATE — CONTINUOUS</div>
+
+    <div class="action">A white SUV. <strong>GOVERNMENT OF KERALA</strong> board on the dashboard. The <strong>DRIVER</strong> steps out — 40s, safari suit, the shoulders of a commando. He doesn't ring the bell. He walks in.</div>
+
+    <div class="character">DRIVER</div>
+    <div class="parenthetical">(calm, almost echoing)</div>
+    <div class="dialogue">Suku Sir... are you happy with the yield? The Minister was asking.</div>
+
+    <div class="action">Suku PALMS the gold into his trouser pocket. Blood from his finger smears the inside of the cotton. He stands. Smiles the way a teacher smiles at an inspector.</div>
+
+    <div class="character">SUKU</div>
+    <div class="parenthetical">(too quickly)</div>
+    <div class="dialogue">Yes. It's... pure.</div>
+
+    <div class="character">DRIVER</div>
+    <div class="parenthetical">(smiles back, doesn't blink)</div>
+    <div class="dialogue">Good. We're here for the refill.</div>
+
+    <div class="action">The Driver's smile widens. It does not reach his eyes.</div>
+
+    <div class="transition">CUT TO BLACK.</div>
+
+    <div class="sfx">The PING of a smartwatch.</div>
+
+    <div class="ep-end">— End of Episode One —</div>
+
+  </div>
+</section>
+
+<!-- ============== EPISODE 2 ============== -->
+<section class="episode reveal" id="ep2">
+  <div class="ep-card">
+    <div class="ep-num-watermark">II</div>
+    <div class="ep-label">Episode Two</div>
+    <h2 class="ep-title">The <em>Protocol</em></h2>
+    <div class="ep-meta">
+      <div class="ep-meta-item"><div class="k">Character</div><div class="v">ANJALI · 30s · PR fixer</div></div>
+      <div class="ep-meta-item"><div class="k">Location</div><div class="v">High-rise glass office</div></div>
+      <div class="ep-meta-item"><div class="k">Runtime</div><div class="v">~21 minutes</div></div>
+    </div>
+  </div>
+
+  <div class="screenplay" data-page="EP. 2 — pg. 01">
+
+    <div class="fade">FADE IN:</div>
+
+    <div class="slug">INT. ANJALI'S OFFICE — HIGH FLOOR — DAY</div>
+
+    <div class="action"><em>Wall-to-wall glass. The city of Thiruvananthapuram laid out below like a circuit board. The same pressure cooker whistles — somewhere — barely audible.</em></div>
+
+    <div class="action">A muted TV is bolted to a black wall. News ticker:</div>
+
+    <div class="insert">
+      <span class="label">News ticker</span>
+      "BREAKING: 2 KILOS OF GOLD SEIZED AT AIRPORT — MAJOR VICTORY FOR CUSTOMS."
+    </div>
+
+    <div class="action">ANJALI (30s, sharp, the kind of person who irons their own collar) is <em>laughing</em>. Not amused — pleased.</div>
+
+    <div class="action">She sits at a glass desk. Black coffee. A plate of <em>Pazham Pori</em> — banana fritters — which she is eating with a silver fork and knife. The grease will not touch her.</div>
+
+    <div class="character">ANJALI</div>
+    <div class="parenthetical">(into a burner phone)</div>
+    <div class="dialogue">The bait worked. Customs is busy posing for photos with the two kilos. Tell the boys to move the other <em>two hundred</em> through the green channels.</div>
+
+    <div class="action">She opens her laptop. A map of the state. Covered in <strong>neon-green dots</strong>.</div>
+
+    <div class="action">She clicks one.</div>
+
+    <div class="insert">
+      <span class="label">Insert — Screen</span>
+      <strong style="color: var(--neon);">WARD 4 — SUKU (TEACHER). STATUS: ACTIVE. SEAL: COMPROMISED.</strong>
+    </div>
+
+    <div class="action">Her smile flickers.</div>
+
+    <div class="action">On her desk: a framed photograph. ANJALI, mid-handshake at a ribbon-cutting. Beside her — beaming — the same <strong>DRIVER</strong> from Episode One. <em>This is not a driver.</em></div>
+
+    <div class="character">ANJALI</div>
+    <div class="parenthetical">(into phone)</div>
+    <div class="dialogue">Wait. Ward 4 had a seal leak. The old man found a nugget.</div>
+
+    <div class="action"><em>Pause. She listens.</em></div>
+
+    <div class="character">ANJALI <span style="font-weight: 400; text-transform: none;">(cont'd)</span></div>
+    <div class="dialogue">No. Don't clean him. He's a teacher. People <em>like</em> him.</div>
+
+    <div class="character">ANJALI <span style="font-weight: 400; text-transform: none;">(cont'd)</span></div>
+    <div class="parenthetical">(quieter)</div>
+    <div class="dialogue">We don't kill icons. We recruit them.</div>
+
+    <div class="action">She drags a file across her desktop. Drops it into a folder labelled <strong>"AMBASSADORS."</strong></div>
+
+    <div class="character">ANJALI</div>
+    <div class="dialogue">Promotion time.</div>
+
+    <div class="action">Outside, an AMBULANCE siren wails past her glass tower. The bag of fertilizer it is carrying is the same neon green.</div>
+
+    <div class="action">The siren bleeds into a low, distorted <em>Vanchippattu</em> drone.</div>
+
+    <div class="transition">CUT TO BLACK.</div>
+
+    <div class="ep-end">— End of Episode Two —</div>
+
+  </div>
+</section>
+
+<!-- ============== EPISODE 3 ============== -->
+<section class="episode reveal" id="ep3">
+  <div class="ep-card">
+    <div class="ep-num-watermark">III</div>
+    <div class="ep-label">Episode Three · Finale</div>
+    <h2 class="ep-title">The <em>Ambassador</em></h2>
+    <div class="ep-meta">
+      <div class="ep-meta-item"><div class="k">Characters</div><div class="v">SECRETARY · SUKU</div></div>
+      <div class="ep-meta-item"><div class="k">Location</div><div class="v">VIP cabin · 03:14 AM</div></div>
+      <div class="ep-meta-item"><div class="k">Runtime</div><div class="v">~24 minutes</div></div>
+    </div>
+  </div>
+
+  <div class="screenplay" data-page="EP. 3 — pg. 01">
+
+    <div class="fade">FADE IN:</div>
+
+    <div class="slug">INT. VIP CABIN — STATE GUEST HOUSE — 03:14 AM</div>
+
+    <div class="action"><em>Sterile. Luxury. The kind of room where decisions are made and forgotten. A wall clock — silent — reads 03:14.</em></div>
+
+    <div class="action">SUKU sits across a polished mahogany table. He is in a <strong>crisp new silk shirt</strong> — the High Command kind. His finger is wrapped in a clean, premium medical dressing. He looks ten years younger and a thousand years older.</div>
+
+    <div class="action">Opposite him: <strong>THE SECRETARY</strong>. Late 50s. Linen-soft voice. The man who signs nothing and decides everything.</div>
+
+    <div class="action">The Secretary slides a tablet across the table.</div>
+
+    <div class="character">SECRETARY</div>
+    <div class="parenthetical">(softly)</div>
+    <div class="dialogue">Suku Sir. Your grandson's admission to the London School of Economics is confirmed. Full scholarship.</div>
+
+    <div class="character">SECRETARY <span style="font-weight: 400; text-transform: none;">(cont'd)</span></div>
+    <div class="dialogue">Courtesy of the K-Clean Youth Foundation.</div>
+
+    <div class="action">Suku looks at the screen. His eyes are <em>wet</em>. On the table — between them — a <strong>white envelope</strong>. Unmarked.</div>
+
+    <div class="action">The Secretary rises. Walks to a <strong>K-CLEAN BAG</strong> in the corner. Same neon green. Same smiling Earth. He opens it.</div>
+
+    <div class="action">Inside — past the compost layer — neatly stacked rows of <span class="gold">SILVER BRICKS</span>. Stamped. Untraceable.</div>
+
+    <div class="character">SECRETARY</div>
+    <div class="dialogue">People think we're cleaning the streets, Suku Sir.</div>
+
+    <div class="character">SECRETARY <span style="font-weight: 400; text-transform: none;">(cont'd)</span></div>
+    <div class="parenthetical">(turning to face him)</div>
+    <div class="dialogue">We're cleaning the <em>money</em>. And you — you are going to be the face of our honesty.</div>
+
+    <div class="slug">INSERT — THE CONTRACT</div>
+
+    <div class="action">A single page. Embossed. The header reads:</div>
+
+    <div class="insert">
+      <span class="label">Document</span>
+      <strong>"OFFICE OF THE CHIEF VIGILANCE OFFICER — K-CLEAN INITIATIVE"</strong><br><br>
+      <em>Appointee:</em> Sri. Suku [REDACTED]<br>
+      <em>Effective:</em> Immediately.
+    </div>
+
+    <div class="action">Suku takes the pen. His bandaged finger trembles. He signs.</div>
+
+    <div class="action"><em>He is no longer a gardener. He is a shield.</em></div>
+
+    <div class="action">CAMERA pans down to the bandaged finger. Pulls back. The whole room is teal-cold. The K-Clean bag in the corner is the only thing that has any colour left.</div>
+
+    <div class="action">The Secretary taps his watch. <strong>03:14 AM.</strong></div>
+
+    <div class="character">SECRETARY</div>
+    <div class="dialogue">Shift change. Let's go to the press meet.</div>
+
+    <div class="sfx">Off-screen: the sound of a crowd. Building. Chanting — "SUKU SIR! SUKU SIR!"</div>
+
+    <div class="slug">INT. PRESS HALL — CONTINUOUS — STILL 03:14 AM</div>
+
+    <div class="action">Flashbulbs. Microphones in his face. Suku adjusts his glasses. He looks <em>past</em> the cameras. Past the audience. Past us.</div>
+
+    <div class="character">SUKU</div>
+    <div class="parenthetical">(steady, like a teacher)</div>
+    <div class="dialogue">It's pure.</div>
+
+    <div class="action"><em>The same two words. The same voice. A different room. A different man.</em></div>
+
+    <div class="transition">CUT TO:</div>
+
+    <div class="slug">EXT. SUKU'S BACKYARD GARDEN — DAY (EPISODE ONE)</div>
+
+    <div class="action">The trembling finger. The rinsing pebble. The pink water.</div>
+
+    <div class="character">SUKU (V.O.)</div>
+    <div class="dialogue">It's pure.</div>
+
+    <div class="transition">FADE TO GREEN.</div>
+
+    <div class="ep-end">— End of Series · The Loop Closes —</div>
+
+  </div>
+</section>
+
+<!-- ============== THE LOOP ============== -->
+<section class="loop-section reveal">
+  <div class="loop-tag">Structural Note</div>
+  <h2 class="loop-title">The <em>Loop</em></h2>
+  <p class="loop-sub">"It's pure" is said twice. Once by an honest man who has just discovered a lie. Once by a corrupt man performing the truth. The same words. The same voice. Three episodes apart.</p>
+
+  <div class="loop-diagram">
+    <svg class="loop-svg" viewBox="0 0 400 400">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 Z" fill="#2eff7a" opacity="0.7"/>
+        </marker>
+      </defs>
+      <circle cx="200" cy="200" r="140" fill="none" stroke="#1a3540" stroke-width="1" stroke-dasharray="4 6"/>
+      <!-- Arrows along the circle -->
+      <path d="M 280,90 A 140 140 0 0 1 320,320" fill="none" stroke="#2eff7a" stroke-width="1.5" opacity="0.5" marker-end="url(#arrow)"/>
+      <path d="M 320,320 A 140 140 0 0 1 80,320" fill="none" stroke="#2eff7a" stroke-width="1.5" opacity="0.5" marker-end="url(#arrow)"/>
+      <path d="M 80,320 A 140 140 0 0 1 120,90" fill="none" stroke="#2eff7a" stroke-width="1.5" opacity="0.5" marker-end="url(#arrow)"/>
+    </svg>
+    <div class="loop-node n1">
+      <div class="num">I</div>
+      <div class="name">The Harvest</div>
+      <div class="line">"It's pure."</div>
+    </div>
+    <div class="loop-node n2">
+      <div class="num">II</div>
+      <div class="name">The Protocol</div>
+      <div class="line">"Promotion time."</div>
+    </div>
+    <div class="loop-node n3">
+      <div class="num">III</div>
+      <div class="name">The Ambassador</div>
+      <div class="line">"It's pure."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PRODUCTION NOTES ============== -->
+<section class="prod">
+  <div class="prod-head">
+    <div class="prod-tag">For The Director</div>
+    <h2 class="prod-title">The <em>Oh Shit</em> Moments</h2>
+  </div>
+
+  <div class="prod-note reveal">
+    <span class="num">01</span>
+    <h3>The Wardrobe Tells the Story</h3>
+    <p>Suku wears two shirts across the three episodes. The audience never sees him change. They feel the change.</p>
+    <div class="wardrobe">
+      <div class="ward-item then">
+        <div class="k">Episode 1</div>
+        <div class="v">Faded <strong>"Janakeeya"</strong> cotton shirt. People's man. Worn at the elbows.</div>
+      </div>
+      <div class="ward-item">
+        <div class="k">Episode 3</div>
+        <div class="v"><strong>High Command silk.</strong> Sharp. Unwrinkled. Foreign-tailored.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prod-note reveal">
+    <span class="num">02</span>
+    <h3>The Hidden Iconography</h3>
+    <p>Every government vehicle in the background of every episode carries a small <span class="accent">green sticker</span> on its rear bumper. The audience won't catch it on first watch. By the third episode they will start counting.</p>
+    <div class="stickers">
+      <div class="sticker"></div>
+      <div class="sticker"></div>
+      <div class="sticker"></div>
+      <div class="sticker"></div>
+      <div class="sticker"></div>
+      <div class="sticker"></div>
+      <div class="sticker"></div>
+    </div>
+    <p style="margin-top: 1rem; font-style: italic; color: var(--ink-3); font-size: 0.85rem;">Marks a "safe vehicle." A vehicle no one will ever stop. A vehicle that delivers fertilizer.</p>
+  </div>
+
+  <div class="prod-note reveal">
+    <span class="num">03</span>
+    <h3>The Sound Bridge</h3>
+    <p>A <span class="accent">pressure cooker whistle</span> threads through every episode. Three houses down in Episode 1. Down the hall in Episode 2. Inside the cabin in Episode 3. By the finale, it is the loudest thing on the soundtrack — and no one in the scene reacts.</p>
+  </div>
+
+  <div class="prod-note reveal">
+    <span class="num">04</span>
+    <h3>The Smiling Earth</h3>
+    <p>The K-Clean logo never looks away from the camera. The face is on the bag in every episode, framed slightly off-centre — so it always feels like it is watching the actor, not the audience. <span class="accent">It is the only character that sees all three rooms.</span></p>
+  </div>
+</section>
+
+<!-- ============== EASTER EGG ============== -->
+<section class="easter">
+  <div class="prod-tag">The Social Media Hook</div>
+  <h2 class="prod-title" style="margin-top: 0.5rem; margin-bottom: 1rem;">Scan the <em>Frame</em></h2>
+  <p style="color: var(--ink-2); max-width: 40ch; margin: 0 auto;">The final frame of the playlist holds a real-looking QR code.</p>
+
+  <div class="qr-wrap">
+    <div class="qr" id="qr"></div>
+  </div>
+
+  <div class="easter-caption">k-clean.gov.in.fake</div>
+  <p class="easter-warning">It leads to a fabricated Kerala-government website. Success stories. Citizen of the Month. A photo of an old man holding a fertilizer bag, smiling. <em>The viewer is meant to wonder if their local award-winner is in the chain.</em></p>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer class="footer">
+  <div class="footer-mark">— End of Document —</div>
+  <p class="footer-text">K-Clean · The Zero Waste Initiative<br>A Final Cut Original · First Draft</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ============== QR CODE GENERATION ==============
+  // Generate a fake but plausible-looking 21x21 QR code pattern
+  function buildQR() {
+    const qr = document.getElementById('qr');
+    const size = 21;
+    const cells = [];
+
+    // Random pattern, but seeded to be deterministic and look QR-ish
+    let seed = 42;
+    function rand() {
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / 233280;
+    }
+
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        cells.push({ x, y, on: rand() > 0.5 });
+      }
+    }
+
+    // Force the three position-detection squares (top-left, top-right, bottom-left)
+    function setSquare(cx, cy) {
+      for (let y = cy; y < cy + 7; y++) {
+        for (let x = cx; x < cx + 7; x++) {
+          const idx = y * size + x;
+          const isBorder = (x === cx || x === cx+6 || y === cy || y === cy+6);
+          const isInner = (x >= cx+2 && x <= cx+4 && y >= cy+2 && y <= cy+4);
+          cells[idx].on = isBorder || isInner;
+        }
+      }
+    }
+    setSquare(0, 0);
+    setSquare(size-7, 0);
+    setSquare(0, size-7);
+
+    // Render
+    cells.forEach(cell => {
+      const div = document.createElement('div');
+      if (!cell.on) div.classList.add('off');
+      qr.appendChild(div);
+    });
+  }
+  buildQR();
+
+  // ============== VANCHIPPATTU SOUNDSCAPE ==============
+  // Slow, distorted synth drone with a rhythmic pulse (rowing tempo)
+  const soundBtn = document.getElementById('soundBtn');
+  let audioCtx = null;
+  let isPlaying = false;
+  let nodes = [];
+  let rhythmInterval = null;
+
+  function makeDistortionCurve(amount) {
+    const samples = 256;
+    const curve = new Float32Array(samples);
+    const k = amount;
+    for (let i = 0; i < samples; i++) {
+      const x = (i * 2) / samples - 1;
+      curve[i] = ((3 + k) * x * 20 * Math.PI / 180) / (Math.PI + k * Math.abs(x));
+    }
+    return curve;
+  }
+
+  function startSoundscape() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = audioCtx;
+
+    // Master gain
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0, ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 1.2);
+    master.connect(ctx.destination);
+
+    // Distortion shaper
+    const dist = ctx.createWaveShaper();
+    dist.curve = makeDistortionCurve(8);
+    dist.oversample = '2x';
+
+    // Low-pass to keep it warm
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 800;
+    lowpass.Q.value = 1.5;
+    lowpass.connect(dist).connect(master);
+
+    // Drone 1 — root D (low)
+    const drone1 = ctx.createOscillator();
+    drone1.type = 'sawtooth';
+    drone1.frequency.value = 73.42; // D2
+    const drone1Gain = ctx.createGain();
+    drone1Gain.gain.value = 0.25;
+    drone1.connect(drone1Gain).connect(lowpass);
+    drone1.start();
+
+    // Drone 2 — fifth A
+    const drone2 = ctx.createOscillator();
+    drone2.type = 'sawtooth';
+    drone2.frequency.value = 110; // A2
+    const drone2Gain = ctx.createGain();
+    drone2Gain.gain.value = 0.15;
+    drone2.connect(drone2Gain).connect(lowpass);
+    drone2.start();
+
+    // Subtle high shimmer
+    const shimmer = ctx.createOscillator();
+    shimmer.type = 'triangle';
+    shimmer.frequency.value = 293.66; // D4
+    const shimmerGain = ctx.createGain();
+    shimmerGain.gain.value = 0.04;
+    // Slow LFO on shimmer pitch
+    const lfo = ctx.createOscillator();
+    lfo.frequency.value = 0.2;
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 4;
+    lfo.connect(lfoGain).connect(shimmer.frequency);
+    shimmer.connect(shimmerGain).connect(master);
+    shimmer.start();
+    lfo.start();
+
+    nodes = [drone1, drone2, shimmer, lfo, master];
+
+    // Rhythmic oar pulse — slow, ~50 BPM, with a soft thud every ~1.2s
+    rhythmInterval = setInterval(() => {
+      const now = ctx.currentTime;
+      const pulse = ctx.createOscillator();
+      pulse.type = 'sine';
+      pulse.frequency.setValueAtTime(80, now);
+      pulse.frequency.exponentialRampToValueAtTime(40, now + 0.25);
+      const pulseGain = ctx.createGain();
+      pulseGain.gain.setValueAtTime(0.5, now);
+      pulseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+      pulse.connect(pulseGain).connect(master);
+      pulse.start(now);
+      pulse.stop(now + 0.5);
+    }, 1200);
+
+    isPlaying = true;
+    soundBtn.classList.add('on');
+  }
+
+  function stopSoundscape() {
+    if (!audioCtx) return;
+    const ctx = audioCtx;
+    const master = nodes[nodes.length - 1];
+    master.gain.cancelScheduledValues(ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8);
+    setTimeout(() => {
+      nodes.forEach(n => { try { if (n.stop) n.stop(); } catch(e){} });
+      nodes = [];
+    }, 900);
+    clearInterval(rhythmInterval);
+    rhythmInterval = null;
+    isPlaying = false;
+    soundBtn.classList.remove('on');
+  }
+
+  soundBtn.addEventListener('click', () => {
+    if (isPlaying) stopSoundscape();
+    else startSoundscape();
+  });
+</script>
+
+</body>
+</html>
